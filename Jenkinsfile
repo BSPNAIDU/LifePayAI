@@ -6,7 +6,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/BSPNAIDU/LifePayAI.git'
+                    url: 'https://github.com/BSPNAIDU/LifePayAI.git'
             }
         }
 
@@ -16,11 +16,18 @@ pipeline {
             }
         }
 
+        stage('Stop Existing Container') {
+            steps {
+                bat '''
+                docker ps -q -f "name=lifepayai-backend-container" && docker stop lifepayai-backend-container || exit 0
+                docker ps -aq -f "name=lifepayai-backend-container" && docker rm lifepayai-backend-container || exit 0
+                '''
+            }
+        }
+
         stage('Run Docker Container') {
             steps {
                 bat '''
-                docker stop lifepayai-backend-container || exit 0
-                docker rm lifepayai-backend-container || exit 0
                 docker run -d --name lifepayai-backend-container ^
                 -p 5001:5000 ^
                 --env-file backend/.env ^
@@ -29,9 +36,15 @@ pipeline {
             }
         }
 
+        stage('Verify Deployment') {
+            steps {
+                bat 'docker ps'
+            }
+        }
+
         stage('Success') {
             steps {
-                echo 'LifePayAI deployed successfully!'
+                echo '🎉 LifePayAI deployed successfully using Jenkins + Docker!'
             }
         }
     }
