@@ -1,0 +1,66 @@
+const mongoose = require("mongoose");
+
+const UserSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+
+    mobile: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+
+    aadhaarNumber: {
+      type: String,
+      default: "",
+    },
+
+    panNumber: {
+      type: String,
+      default: "",
+    },
+
+    creditScore: {
+      type: Number,
+      default: 0,
+    },
+
+    aiScore: {
+      type: Number,
+      default: 0,
+    },
+
+    loanEligible: {
+      type: Boolean,
+      default: false,
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    versionKey: false,
+  }
+);
+
+module.exports = mongoose.model("User", UserSchema);
